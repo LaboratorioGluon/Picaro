@@ -2030,7 +2030,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_TO_SOT_SMD:SOT-23-6_Handsoldering"
+		(property "Footprint" "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm"
 			(at 158.75 102.87 0)
 			(effects
 				(font
@@ -2039,7 +2039,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://www.ymin.cn/lithium-ion-capacitor-lic-sla-series-product/"
 			(at 158.75 102.87 0)
 			(effects
 				(font

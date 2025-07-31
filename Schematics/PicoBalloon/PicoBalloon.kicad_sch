@@ -6844,7 +6844,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://lcsc.com/datasheet/lcsc_datasheet_2410311328_PULSE-W3011_C6604735.pdf"
 			(at 114.3 80.645 0)
 			(effects
 				(font
@@ -9902,12 +9902,14 @@
 		)
 		(pin "37"
 			(uuid "51a35ee6-9627-468a-9897-090ed235f79b")
+			(alternate "SYS_JTCK-SWCLK")
 		)
 		(pin "33"
 			(uuid "04e89145-51c8-4253-9b72-b7665d8fc1b3")
 		)
 		(pin "34"
 			(uuid "9a68f307-7c7e-47b0-a400-58d0881eccec")
+			(alternate "SYS_JTMS-SWDIO")
 		)
 		(pin "38"
 			(uuid "d0efc913-c679-4617-befe-a6cde2af4f09")
@@ -9917,15 +9919,18 @@
 		)
 		(pin "12"
 			(uuid "df304424-cd89-4c61-a503-b7a845c23c91")
+			(alternate "ADC1_IN2")
 		)
 		(pin "9"
 			(uuid "0275b37e-b0f9-4cf7-8df7-3231fb62192e")
 		)
 		(pin "11"
 			(uuid "9cd765b1-ef41-4049-825d-b38670963780")
+			(alternate "ADC1_IN1")
 		)
 		(pin "10"
 			(uuid "f4ccc6ef-6921-4ef6-ad5f-8cf72af6a865")
+			(alternate "ADC1_IN0")
 		)
 		(pin "44"
 			(uuid "82d51123-1188-4446-99f8-179fa8cf55a6")
@@ -10004,6 +10009,7 @@
 		)
 		(pin "14"
 			(uuid "b3e3071e-bb14-4e37-90f2-27c369541030")
+			(alternate "SPI1_NSS")
 		)
 		(pin "46"
 			(uuid "b77ff414-70e1-415b-9e5a-ca7ca6f5439b")
@@ -10016,6 +10022,7 @@
 		)
 		(pin "30"
 			(uuid "7bbeb0fb-8087-47f7-99b8-44e4e29f2865")
+			(alternate "USART1_TX")
 		)
 		(pin "48"
 			(uuid "9c18b28c-d4ba-4d4a-b9b8-a8f3616b8598")
@@ -10028,18 +10035,22 @@
 		)
 		(pin "17"
 			(uuid "85e18c95-be3a-43c5-b4fc-7ff4f19cf376")
+			(alternate "SPI1_MOSI")
 		)
 		(pin "13"
 			(uuid "dfb645ca-10e6-4a7c-84be-85f0f4034719")
 		)
 		(pin "15"
 			(uuid "007722f7-2b29-4e8e-a0a5-53ecea2536a4")
+			(alternate "SPI1_SCK")
 		)
 		(pin "31"
 			(uuid "0263d36c-4619-4ecb-8b34-af04a4d37844")
+			(alternate "USART1_RX")
 		)
 		(pin "16"
 			(uuid "074954ce-5733-420c-ba08-893738d1047a")
+			(alternate "SPI1_MISO")
 		)
 		(instances
 			(project ""

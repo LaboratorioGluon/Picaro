@@ -532,10 +532,10 @@
       "gencad": "",
       "idf": "",
       "netlist": "",
-      "plot": "",
+      "plot": "plots/",
       "pos_files": "",
       "specctra_dsn": "",
-      "step": "",
+      "step": "3d/PicoBalloon.glb",
       "svg": "",
       "vrml": ""
     },

@@ -4,9 +4,12 @@
 
 #include "nmea.h"
 #include "casic.h"
+#include "uartDebug.h"
 
 #define RAW_DATA_BUFFER_SIZE 256
-#define READ_DATA_CHUNK_SIZE 90
+#define READ_DATA_CHUNK_SIZE 1
+
+#define UART_TX_DELAY 500
 
 static UART_HandleTypeDef gpsUart;
 static uint8_t rawDataBuffer[RAW_DATA_BUFFER_SIZE]="";
@@ -36,10 +39,10 @@ void gps_init()
 
     uint8_t buf[200];
     pcas_queryInformation(buf, CASIC_INFO_FW);
-    HAL_UART_Transmit(&gpsUart, buf, strlen(buf), 1000);
+    HAL_UART_Transmit(&gpsUart, buf, strlen(buf), UART_TX_DELAY);
 
     //HAL_Delay(100);
-    HAL_UART_Receive(&gpsUart, buf, 6, 1000);
+    HAL_UART_Receive(&gpsUart, buf, 6, UART_TX_DELAY);
     buf[6] = '\0';
 
     // Check the received data, if the data is correct
@@ -50,14 +53,13 @@ void gps_init()
         gps_configureUart(9600);
 
         pcas_setBaudRate(buf, CASIC_BR_115200);
-        HAL_UART_Transmit(&gpsUart, buf, strlen(buf), 1000);
+        HAL_UART_Transmit(&gpsUart, buf, strlen(buf), UART_TX_DELAY);
 
         pcas_reset(buf, CASIC_RESET_HOT);
-        HAL_UART_Transmit(&gpsUart, buf, strlen(buf), 1000);
+        HAL_UART_Transmit(&gpsUart, buf, strlen(buf), UART_TX_DELAY);
 
         gps_configureUart(115200);
     }
-
 
     CasicNmeaOutput nmeaOutput;
     nmeaOutput.nGGA=1;
@@ -68,11 +70,17 @@ void gps_init()
     nmeaOutput.nVTG=1;
     nmeaOutput.nZDA=0;
     nmeaOutput.nTXT=1;
+
     pcas_setNmeaOutput(buf, nmeaOutput);
-    HAL_UART_Transmit(&gpsUart, buf, strlen(buf), 1000);
+    HAL_UART_Transmit(&gpsUart, buf, strlen(buf), UART_TX_DELAY);
+
+    pcas_configureSystem(buf, CASIS_SYS_GPS_BDS_GLONASS);
+    HAL_UART_Transmit(&gpsUart, buf, strlen(buf), UART_TX_DELAY);
+
+    pcas_setPosUpdateRate(buf, CASIC_POS_RATE_1HZ);
+    HAL_UART_Transmit(&gpsUart, buf, strlen(buf), UART_TX_DELAY);
+
 }
-
-
 
 void gps_readData()
 {
@@ -83,12 +91,12 @@ void gps_readData()
         rawDataBufferCurrent = 0;
     }
 
-    HAL_StatusTypeDef ret = HAL_UART_Receive(&gpsUart, &rawDataBuffer[rawDataBufferCurrent], READ_DATA_CHUNK_SIZE, 1000);
-    if (ret == HAL_OK)
+    HAL_StatusTypeDef ret = HAL_UART_Receive(&gpsUart, &rawDataBuffer[rawDataBufferCurrent], READ_DATA_CHUNK_SIZE, 300);
+    while (ret != HAL_TIMEOUT && (rawDataBufferCurrent + READ_DATA_CHUNK_SIZE) < RAW_DATA_BUFFER_SIZE)
     {
         rawDataBufferCurrent += READ_DATA_CHUNK_SIZE;
+        ret = HAL_UART_Receive(&gpsUart, &rawDataBuffer[rawDataBufferCurrent], READ_DATA_CHUNK_SIZE, 300);
     }
-
 
     uint32_t dFound=0, eFound=0, lasteFound = 0;
     for( uint32_t i = 0; i < rawDataBufferCurrent; i++)
@@ -135,6 +143,9 @@ void gps_parseNMEA(uint8_t *nmea)
     if( nmeaMessage.payloadId == NMEA_MSG_GGA ){
         volatile NMEA_Payload_GGA_t gga;
         NMEA_GGA_Parse(&gga, &nmeaMessage);
+        HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_2);
+        debug_send(nmea);
+        debug_send("\r\n");
 	}
 
     return;

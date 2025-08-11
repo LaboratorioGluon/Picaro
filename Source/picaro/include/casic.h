@@ -37,6 +37,16 @@ typedef enum{
     CASIC_UPGRADE_CODE = 5
 } CasicInfo;
 
+typedef enum{
+    CASIC_SYS_GPS = 0,
+    CASIC_SYS_BDS,
+    CASIC_SYS_GPS_BDS,
+    CASIC_SYS_GLONASS,
+    CASIC_SYS_GPS_GLONASS,
+    CASIC_SYS_BDS_GLONASS,
+    CASIS_SYS_GPS_BDS_GLONASS
+} CasicSystem;
+
 typedef struct{
     uint8_t nGGA;
     uint8_t nGLL;
@@ -59,6 +69,9 @@ void pcas_setPosUpdateRate(uint8_t *msg, CasicPosRate rate);
 
 // CAS03
 void pcas_setNmeaOutput(uint8_t *msg, CasicNmeaOutput nmeaoutput);
+
+// CAS04
+void pcas_configureSystem(uint8_t *msg, CasicSystem system);
 
 // CAS06
 void pcas_queryInformation(uint8_t *msg, CasicInfo info);

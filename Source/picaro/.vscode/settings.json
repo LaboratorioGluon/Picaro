@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "nmea.h": "c"
+        "nmea.h": "c",
+        "system.h": "c"
     }
 }

@@ -3,11 +3,13 @@
 #include <string.h>
 #include <stdio.h>
 
-static uint8_t *saveToFlash = "$PCAS00";
-static uint8_t *setBaudRate = "$PCAS01";
-static uint8_t *nmeaSetOutput = "$PCAS03";
-static uint8_t *queryInfo = "$PCAS06";
-static uint8_t *resetChip = "$PCAS10";
+#define LOCAL_BUF_LEN 100
+
+static uint8_t *prefixSaveToFlash = "$PCAS00";
+static uint8_t *prefixSetBaudRate = "$PCAS01";
+static uint8_t *prefixNmeaSetOutput = "$PCAS03";
+static uint8_t *prefixQueryInfo = "$PCAS06";
+static uint8_t *prefixResetChip = "$PCAS10";
 
 uint8_t pcas_checksum(uint8_t * msg)
 {
@@ -25,8 +27,8 @@ uint8_t pcas_checksum(uint8_t * msg)
 // CAS00
 void pcas_saveToFlash(uint8_t * msg)
 {
-    uint8_t buf[200];
-    strcpy(buf, saveToFlash);
+    uint8_t buf[LOCAL_BUF_LEN];
+    strcpy(buf, prefixSaveToFlash);
     strcat(buf, "*");
     uint8_t check = pcas_checksum(buf);
     sprintf(msg, "%s%02X\r\n", buf, check);
@@ -35,9 +37,8 @@ void pcas_saveToFlash(uint8_t * msg)
 // CAS01
 void pcas_setBaudRate(uint8_t *msg, CasicBaudRate baudrate)
 {
-    uint8_t buf[200];
-    //strcpy(buf, nmeaSetOutput);
-    sprintf(buf, "%s,%d*", setBaudRate, baudrate);
+    uint8_t buf[LOCAL_BUF_LEN];
+    sprintf(buf, "%s,%d*", prefixSetBaudRate, baudrate);
     uint8_t check = pcas_checksum(buf);
     sprintf(msg, "%s%02X\r\n", buf, check);
 }
@@ -45,15 +46,18 @@ void pcas_setBaudRate(uint8_t *msg, CasicBaudRate baudrate)
 // CAS02
 void pcas_setPosUpdateRate(uint8_t *msg, CasicPosRate rate)
 {
+    uint8_t buf[LOCAL_BUF_LEN];
+    sprintf(buf, "%s,%d*", prefixQueryInfo, rate);
 
+    uint8_t check = pcas_checksum(buf);
+    sprintf(msg, "%s%02X\r\n", buf, check);
 }
 
 // CAS03
 void pcas_setNmeaOutput(uint8_t *msg, CasicNmeaOutput nmeaoutput)
 {
-    uint8_t buf[200];
-    //strcpy(buf, nmeaSetOutput);
-    sprintf(buf, "%s,%d,%d,%d,%d,%d,%d,%d,%d*", nmeaSetOutput, 
+    uint8_t buf[LOCAL_BUF_LEN];
+    sprintf(buf, "%s,%d,%d,%d,%d,%d,%d,%d,%d*", prefixNmeaSetOutput, 
         nmeaoutput.nGGA,
         nmeaoutput.nGLL,
         nmeaoutput.nGSA,
@@ -66,11 +70,20 @@ void pcas_setNmeaOutput(uint8_t *msg, CasicNmeaOutput nmeaoutput)
     sprintf(msg, "%s%02X\r\n", buf, check);
 }
 
+void pcas_configureSystem(uint8_t *msg, CasicSystem system)
+{
+    uint8_t buf[LOCAL_BUF_LEN];
+    sprintf(buf, "%s,%d*", prefixQueryInfo, system);
+
+    uint8_t check = pcas_checksum(buf);
+    sprintf(msg, "%s%02X\r\n", buf, check);
+}
+
 void pcas_queryInformation(uint8_t *msg, CasicInfo info)
 {
-    uint8_t buf[200];
-    //strcpy(buf, nmeaSetOutput);
-    sprintf(buf, "%s,%d*", queryInfo, info);
+    uint8_t buf[LOCAL_BUF_LEN];
+    sprintf(buf, "%s,%d*", prefixQueryInfo, info);
+
     uint8_t check = pcas_checksum(buf);
     sprintf(msg, "%s%02X\r\n", buf, check);
 
@@ -79,9 +92,9 @@ void pcas_queryInformation(uint8_t *msg, CasicInfo info)
 
 void pcas_reset(uint8_t *msg, CasicReset reset)
 {
-    uint8_t buf[200];
-    //strcpy(buf, nmeaSetOutput);
-    sprintf(buf, "%s,%d*", queryInfo, resetChip);
+    uint8_t buf[LOCAL_BUF_LEN];
+    sprintf(buf, "%s,%d*", prefixQueryInfo, prefixResetChip);
+
     uint8_t check = pcas_checksum(buf);
     sprintf(msg, "%s%02X\r\n", buf, check);
 

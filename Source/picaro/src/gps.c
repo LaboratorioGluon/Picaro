@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "nmea.h"
+#include "casic.h"
 
 #define RAW_DATA_BUFFER_SIZE 256
 #define READ_DATA_CHUNK_SIZE 90
@@ -14,12 +15,10 @@ static uint32_t rawDataBufferCurrent = 0;
 
 void gps_parseNMEA(uint8_t *nmea);
 
-void gps_init()
+void gps_configureUart(uint32_t baudrate)
 {
-    __HAL_RCC_USART1_CLK_ENABLE();
-
     gpsUart.Instance = USART1;
-    gpsUart.Init.BaudRate = 9600;
+    gpsUart.Init.BaudRate = baudrate;
     gpsUart.Init.WordLength = UART_WORDLENGTH_8B;
     gpsUart.Init.StopBits = UART_STOPBITS_1;
     gpsUart.Init.Parity = UART_PARITY_NONE;
@@ -27,8 +26,52 @@ void gps_init()
     gpsUart.Init.HwFlowCtl = UART_HWCONTROL_NONE;
     gpsUart.Init.OverSampling = UART_OVERSAMPLING_16;
     HAL_UART_Init(&gpsUart);
-
 }
+
+void gps_init()
+{
+    __HAL_RCC_USART1_CLK_ENABLE();
+
+    gps_configureUart(115200);   
+
+    uint8_t buf[200];
+    pcas_queryInformation(buf, CASIC_INFO_FW);
+    HAL_UART_Transmit(&gpsUart, buf, strlen(buf), 1000);
+
+    //HAL_Delay(100);
+    HAL_UART_Receive(&gpsUart, buf, 6, 1000);
+    buf[6] = '\0';
+
+    // Check the received data, if the data is correct
+    // the module is already working in 115200
+    // otherwise reset the baudrate configuration.
+    if (strcmp(buf, "$GPTXT") != 0)
+    {
+        gps_configureUart(9600);
+
+        pcas_setBaudRate(buf, CASIC_BR_115200);
+        HAL_UART_Transmit(&gpsUart, buf, strlen(buf), 1000);
+
+        pcas_reset(buf, CASIC_RESET_HOT);
+        HAL_UART_Transmit(&gpsUart, buf, strlen(buf), 1000);
+
+        gps_configureUart(115200);
+    }
+
+
+    CasicNmeaOutput nmeaOutput;
+    nmeaOutput.nGGA=1;
+    nmeaOutput.nGLL=0;
+    nmeaOutput.nGSA=1;
+    nmeaOutput.nGSV=0;
+    nmeaOutput.nRMC=1;
+    nmeaOutput.nVTG=1;
+    nmeaOutput.nZDA=0;
+    nmeaOutput.nTXT=1;
+    pcas_setNmeaOutput(buf, nmeaOutput);
+    HAL_UART_Transmit(&gpsUart, buf, strlen(buf), 1000);
+}
+
 
 
 void gps_readData()
@@ -46,8 +89,6 @@ void gps_readData()
         rawDataBufferCurrent += READ_DATA_CHUNK_SIZE;
     }
 
-
-    //strchr(rawDataBuffer, '\n');
 
     uint32_t dFound=0, eFound=0, lasteFound = 0;
     for( uint32_t i = 0; i < rawDataBufferCurrent; i++)
@@ -92,8 +133,9 @@ void gps_parseNMEA(uint8_t *nmea)
     NMEA_Pack(&nmeaMessage, nmea);
     
     if( nmeaMessage.payloadId == NMEA_MSG_GGA ){
-        NMEA_Payload_GGA_t gga;
-		NMEA_GGA_Parse(&gga, &nmeaMessage);
+        volatile NMEA_Payload_GGA_t gga;
+        NMEA_GGA_Parse(&gga, &nmeaMessage);
 	}
+
     return;
 }

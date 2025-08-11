@@ -1,3 +1,4 @@
+#include "config.h"
 #include "gps.h"
 #include <stm32f1xx_hal.h>
 #include <string.h>
@@ -114,7 +115,10 @@ void gps_readData()
                 rawDataBuffer[eFound] = 0;
 
                 gps_parseNMEA((char*)&rawDataBuffer[dFound]);
-
+                #ifdef DEBUG_GPS
+                    debug_send(&rawDataBuffer[dFound]);
+                    debug_send("\r\n");
+                #endif
                 dFound = 0;
                 eFound = 0;
             }
@@ -144,8 +148,6 @@ void gps_parseNMEA(uint8_t *nmea)
         volatile NMEA_Payload_GGA_t gga;
         NMEA_GGA_Parse(&gga, &nmeaMessage);
         HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_2);
-        debug_send(nmea);
-        debug_send("\r\n");
 	}
 
     return;

@@ -9,6 +9,12 @@ typedef struct{
     GPIO_InitTypeDef gpioDef;
 } gpioInitConfig;
 
+
+
+/*************************/
+/** GPIO CONFIGURATION  */
+/***********************/
+
 const gpioInitConfig gpioConfig[] = 
 {
     { GPIOB, {GPIO_PIN_2             ,  GPIO_MODE_OUTPUT_PP, GPIO_NOPULL, GPIO_SPEED_FREQ_HIGH}},
@@ -27,6 +33,10 @@ const gpioInitConfig gpioConfig[] =
 
 const uint32_t gpioConfigSize = sizeof(gpioConfig)/sizeof(gpioInitConfig);
 
+/************************************************/
+
+
+
 static void system_initGpio()
 {
     GPIO_InitTypeDef GPIO_InitStruct = {0};
@@ -41,10 +51,8 @@ static void system_initGpio()
   {
     HAL_GPIO_Init(gpioConfig[i].port, &gpioConfig[i].gpioDef);
   }
-
   
   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
-
 }
 
 static void system_initClocks()

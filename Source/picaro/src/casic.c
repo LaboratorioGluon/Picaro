@@ -5,13 +5,17 @@
 
 #define LOCAL_BUF_LEN 100
 
-static uint8_t *prefixSaveToFlash = "$PCAS00";
-static uint8_t *prefixSetBaudRate = "$PCAS01";
-static uint8_t *prefixNmeaSetOutput = "$PCAS03";
-static uint8_t *prefixQueryInfo = "$PCAS06";
-static uint8_t *prefixResetChip = "$PCAS10";
+static const char *prefixSaveToFlash = "$PCAS00";
+static const char *prefixSetBaudRate = "$PCAS01";
+static const char *prefixSetUpdateRate = "$PCAS02";
+static const char *prefixNmeaSetOutput = "$PCAS03";
+static const char *prefixConfigSystem = "$PCAS04";
+static const char *prefixQueryInfo = "$PCAS06";
+static const char *prefixResetChip = "$PCAS10";
 
-uint8_t pcas_checksum(uint8_t * msg)
+static char localBuf[LOCAL_BUF_LEN] = "";
+
+uint8_t pcas_checksum(char * msg)
 {
 	/* Support senteces with or without the starting dollar sign. */
 	if (*msg == '$') msg++;
@@ -27,37 +31,33 @@ uint8_t pcas_checksum(uint8_t * msg)
 // CAS00
 void pcas_saveToFlash(uint8_t * msg)
 {
-    uint8_t buf[LOCAL_BUF_LEN];
-    strcpy(buf, prefixSaveToFlash);
-    strcat(buf, "*");
-    uint8_t check = pcas_checksum(buf);
-    sprintf(msg, "%s%02X\r\n", buf, check);
+    strcpy(localBuf, prefixSaveToFlash);
+    strcat(localBuf, "*");
+    uint8_t check = pcas_checksum(localBuf);
+    sprintf((char*)msg, "%s%02X\r\n", localBuf, check);
 }
 
 // CAS01
 void pcas_setBaudRate(uint8_t *msg, CasicBaudRate baudrate)
 {
-    uint8_t buf[LOCAL_BUF_LEN];
-    sprintf(buf, "%s,%d*", prefixSetBaudRate, baudrate);
-    uint8_t check = pcas_checksum(buf);
-    sprintf(msg, "%s%02X\r\n", buf, check);
+    sprintf(localBuf, "%s,%d*", prefixSetBaudRate, baudrate);
+    uint8_t check = pcas_checksum(localBuf);
+    sprintf((char*)msg, "%s%02X\r\n", localBuf, check);
 }
 
 // CAS02
 void pcas_setPosUpdateRate(uint8_t *msg, CasicPosRate rate)
 {
-    uint8_t buf[LOCAL_BUF_LEN];
-    sprintf(buf, "%s,%d*", prefixQueryInfo, rate);
+    sprintf(localBuf, "%s,%d*", prefixSetUpdateRate, rate);
 
-    uint8_t check = pcas_checksum(buf);
-    sprintf(msg, "%s%02X\r\n", buf, check);
+    uint8_t check = pcas_checksum(localBuf);
+    sprintf((char*)msg, "%s%02X\r\n", localBuf, check);
 }
 
 // CAS03
 void pcas_setNmeaOutput(uint8_t *msg, CasicNmeaOutput nmeaoutput)
 {
-    uint8_t buf[LOCAL_BUF_LEN];
-    sprintf(buf, "%s,%d,%d,%d,%d,%d,%d,%d,%d*", prefixNmeaSetOutput, 
+    sprintf(localBuf, "%s,%d,%d,%d,%d,%d,%d,%d,%d*", prefixNmeaSetOutput, 
         nmeaoutput.nGGA,
         nmeaoutput.nGLL,
         nmeaoutput.nGSA,
@@ -66,36 +66,36 @@ void pcas_setNmeaOutput(uint8_t *msg, CasicNmeaOutput nmeaoutput)
         nmeaoutput.nVTG,
         nmeaoutput.nZDA,
         nmeaoutput.nTXT);
-    uint8_t check = pcas_checksum(buf);
-    sprintf(msg, "%s%02X\r\n", buf, check);
+
+    uint8_t check = pcas_checksum(localBuf);
+    sprintf((char*)msg, "%s%02X\r\n", localBuf, check);
 }
 
+// CAS04
 void pcas_configureSystem(uint8_t *msg, CasicSystem system)
 {
-    uint8_t buf[LOCAL_BUF_LEN];
-    sprintf(buf, "%s,%d*", prefixQueryInfo, system);
+    sprintf(localBuf, "%s,%d*", prefixConfigSystem, system);
 
-    uint8_t check = pcas_checksum(buf);
-    sprintf(msg, "%s%02X\r\n", buf, check);
+    uint8_t check = pcas_checksum(localBuf);
+    sprintf((char*)msg, "%s%02X\r\n", localBuf, check);
 }
 
+// CAS06
 void pcas_queryInformation(uint8_t *msg, CasicInfo info)
 {
-    uint8_t buf[LOCAL_BUF_LEN];
-    sprintf(buf, "%s,%d*", prefixQueryInfo, info);
+    sprintf(localBuf, "%s,%d*", prefixQueryInfo, info);
 
-    uint8_t check = pcas_checksum(buf);
-    sprintf(msg, "%s%02X\r\n", buf, check);
+    uint8_t check = pcas_checksum(localBuf);
+    sprintf((char*)msg, "%s%02X\r\n", localBuf, check);
 
 }
 
-
+// CAS10
 void pcas_reset(uint8_t *msg, CasicReset reset)
 {
-    uint8_t buf[LOCAL_BUF_LEN];
-    sprintf(buf, "%s,%d*", prefixQueryInfo, prefixResetChip);
+    sprintf(localBuf, "%s,%d*", prefixResetChip, reset);
 
-    uint8_t check = pcas_checksum(buf);
-    sprintf(msg, "%s%02X\r\n", buf, check);
+    uint8_t check = pcas_checksum(localBuf);
+    sprintf((char*)msg, "%s%02X\r\n", localBuf, check);
 
 }

@@ -35,8 +35,6 @@ const uint32_t gpioConfigSize = sizeof(gpioConfig)/sizeof(gpioInitConfig);
 
 /************************************************/
 
-
-
 static void system_initGpio()
 {
     GPIO_InitTypeDef GPIO_InitStruct = {0};

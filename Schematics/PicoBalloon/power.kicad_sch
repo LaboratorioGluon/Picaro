@@ -5,7 +5,7 @@
 	(uuid "29a205be-b8c5-4306-b8c8-ba9e718ceb0f")
 	(paper "A4")
 	(title_block
-		(title "Picoballoon v1")
+		(title "Picoballoon A.1.1")
 		(date "2025-07-29")
 		(company "Laboratorio Gluon")
 	)
@@ -1956,7 +1956,6 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "1b6d3856-6763-4fff-99b4-f45c034f51bd")
 		(property "Reference" "C14"
 			(at 152.4 77.4762 0)

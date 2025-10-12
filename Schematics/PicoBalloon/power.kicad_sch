@@ -2045,7 +2045,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10F"
+		(property "Value" "15F"
 			(at 161.29 103.5938 0)
 			(effects
 				(font
@@ -2728,7 +2728,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "33"
+		(property "Value" "16.5"
 			(at 161.29 86.3599 0)
 			(effects
 				(font

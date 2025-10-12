@@ -1,7 +1,14 @@
 {
+    "editor.formatOnSave": true,
+    "editor.fontFamily": "Fira Code",
+    "editor.fontLigatures": true,
     "files.associations": {
         "nmea.h": "c",
         "system.h": "c",
-        "uartdebug.h": "c"
+        "uartdebug.h": "c",
+        "config.h": "c",
+        "gps.h": "c",
+        "pinout.h": "c",
+        "adcs.h": "c"
     }
 }

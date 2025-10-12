@@ -137,17 +137,31 @@ void gps_readData()
 }
 
 
+//0x200002f3 <rawDataBuffer+79> "$BDGSA,A,3,22,29,30,,,,,,,,,,11.8,6.7,9.7*1C"
 
 void gps_parseNMEA(uint8_t *nmea)
 {
-    
+    static uint8_t fixed = 0u;    
     NMEA_Message_t nmeaMessage;
     NMEA_Pack(&nmeaMessage, nmea);
     
     if( nmeaMessage.payloadId == NMEA_MSG_GGA ){
         volatile NMEA_Payload_GGA_t gga;
         NMEA_GGA_Parse(&gga, &nmeaMessage);
-        HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_2);
+
+        
+            
+        if (gga.quality != 0)
+        {
+            HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);
+        }
+        else
+        {
+            if (gga.time.hour != -1)
+            {
+                HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_14);
+            }
+        }
 	}
 
     return;

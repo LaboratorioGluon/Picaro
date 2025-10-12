@@ -5,6 +5,6 @@
 
 void debug_init();
 
-void debug_send(uint8_t *string);
+void debug_send(uint8_t* string);
 
-#endif //UARTDEBUG_H__
+#endif // UARTDEBUG_H__

@@ -1,0 +1,36 @@
+#ifndef PINOUT_H__
+#define PINOUT_H__
+
+/** PSU  **/
+#define PSU_BOOST_EN_PORT    GPIOB
+#define PSU_BOOST_EN_PIN     GPIO_PIN_9
+#define PSU_SUPERCAP_EN_PORT GPIOB
+#define PSU_SUPERCAP_EN_PIN  GPIO_PIN_8
+
+/** GPS **/
+#define GPS_ONOFF_PORT   GPIOA
+#define GPS_ONOFF_PIN    GPIO_PIN_11
+#define GPS_NRESET_PORT  GPIOA
+#define GPS_NRESET_PIN   GPIO_PIN_12
+#define GPS_LNASHDN_PORT GPIOB
+#define GPS_LNASHDN_PIN  GPIO_PIN_4
+#define GPS_TX_PORT      GPIOA
+#define GPS_TX_PIN       GPIO_PIN_10
+#define GPS_RX_PORT      GPIOA
+#define GPS_RX_PIN       GPIO_PIN_9
+
+/** ADC Sensors **/
+#define ADC_VSOLAR_PORT GPIOA
+#define ADC_VSOLAR_PIN  GPIO_PIN_0
+#define ADC_VCAP_PORT   GPIOA
+#define ADC_VCAP_PIN    GPIO_PIN_1
+#define ADC_TEMP_PORT   GPIOA
+#define ADC_TEMP_PIN    GPIO_PIN_2
+
+/** LEDs **/
+#define LEDS_GREEN_PORT GPIOB
+#define LEDS_GREEN_PIN  GPIO_PIN_13
+#define LEDS_RED_PORT   GPIOB
+#define LEDS_RED_PIN    GPIO_PIN_14
+
+#endif // PINOUT_H__

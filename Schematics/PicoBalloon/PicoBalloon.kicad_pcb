@@ -6400,6 +6400,7 @@
 			(effects
 				(font
 					(size 0.001 0.001)
+					(thickness 0.15)
 				)
 			)
 		)
@@ -6411,6 +6412,7 @@
 			(effects
 				(font
 					(size 0.001 0.001)
+					(thickness 0.15)
 				)
 			)
 		)
@@ -13731,7 +13733,7 @@
 		(layer "User.1")
 		(uuid "547e508d-5b33-434f-9591-eea93faa04e4")
 		(pts
-			(xy 137.7 126) (xy 163.7 125.3)
+			(xy 138.75 126) (xy 162.75 126)
 		)
 		(height 10.1)
 		(orientation 0)
@@ -13752,8 +13754,8 @@
 			(extension_offset 0.5)
 			(keep_text_aligned yes)
 		)
-		(gr_text "26"
-			(at 150.7 134.95 0)
+		(gr_text "24"
+			(at 150.75 134.95 0)
 			(layer "User.1")
 			(uuid "547e508d-5b33-434f-9591-eea93faa04e4")
 			(effects

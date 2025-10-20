@@ -16,6 +16,7 @@
 *.sch-bak
 *~
 ~*.lck
+**/*.zip
 
 _autosave-*
 *.tmp
